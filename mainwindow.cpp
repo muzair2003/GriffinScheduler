@@ -185,7 +185,6 @@ ui->Display->clearContents();
 
 void MainWindow::on_prevPageButton_clicked()
 {
-
         ui->Display->clearContents();
 
 
