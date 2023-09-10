@@ -49,6 +49,13 @@ MainWindow::MainWindow(QWidget *parent)
       ui->Display->setVerticalHeaderLabels(timeLabels);
 
 
+
+      currentPage = 0;
+
+
+
+ui->prevPageButton->setEnabled(false);
+
 }
 
 
@@ -117,6 +124,7 @@ for (int i=0;i<subjects.size();i++){
 
 
 void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std::vector<Slots::Days> days, Slots::Type what) {
+
 // Define your day to column mapping
 std::map<Slots::Days, int> dayColumnMapping = {
     {Slots::Monday, 0},
@@ -157,25 +165,54 @@ for (const auto &day : days) {
 
 void MainWindow::on_AlgorithmButton_clicked()
 {
-Algorithm* newAlg = new Algorithm();
-std::vector<std::vector<Slots*>> final = newAlg->Solve(subjects);
-for(int i=0;i<final.size();i++){
-    for(int j=0;j<final[i].size();j++){
-        InsertSlot(final[i][j]->GetSubject(),final[i][j]->GetTime(),final[i][j]->GetDay(),final[i][j]->GetType());
-    }
+
+final = newAlg->Solve(subjects);
+maxPage = final.size()-1;
+
+if(currentPage == maxPage){
+    ui->nextPageButton->setEnabled(false);
 }
+ui->Display->clearContents();
+
+
+    for(int j=0;j<final[currentPage].size();j++){
+        InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
+    }
 
 }
+
 
 
 void MainWindow::on_prevPageButton_clicked()
 {
+        ui->Display->clearContents();
 
+
+
+    for(int j=0;j<final[currentPage].size();j++){
+        InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
+    }
+
+    if(currentPage==0){
+        ui->prevPageButton->setEnabled(false);
+    }
+    currentPage--;
 }
 
 
 void MainWindow::on_nextPageButton_clicked()
 {
+    ui->Display->clearContents();
+
+
+    for(int j=0;j<final[currentPage].size();j++){
+        InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
+    }
+
+    if(currentPage == maxPage){
+        ui->nextPageButton->setEnabled(false);
+    }
+    currentPage++;
 
 }
 

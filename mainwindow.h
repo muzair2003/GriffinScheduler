@@ -61,8 +61,10 @@ private slots:
     void on_nextPageButton_clicked();
 
 private:
+      Algorithm* newAlg = new Algorithm();
+     std::vector<std::vector<Slots*>> final;
     int currentPage;
-    int itemsPerPage;
+    int maxPage;
     std::vector<std::pair<QString, std::tuple<QTime, QTime, std::vector<Slots::Days>, Slots::Type>>> currentSlots;
     void InsertSlot(QString subject,std::pair<QTime,QTime> times,std::vector<Slots::Days> days,Slots::Type what);
     void updateTable();
