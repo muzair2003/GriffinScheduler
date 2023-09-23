@@ -5,6 +5,8 @@
 #include <QMainWindow>
 #include "subject.h"
 #include<QTableWidgetItem>
+#include <QRandomGenerator>
+
 
 #include <QDialog>
 #include "algorithm.h"
@@ -59,6 +61,8 @@ private slots:
     void on_prevPageButton_clicked();
 
     void on_nextPageButton_clicked();
+
+    void on_openGLWidget_aboutToCompose();
 
 private:
       Algorithm* newAlg = new Algorithm();
