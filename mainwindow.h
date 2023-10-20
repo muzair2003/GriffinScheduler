@@ -7,6 +7,8 @@
 #include<QTableWidgetItem>
 #include <QRandomGenerator>
 
+#include <array>
+
 
 #include <QDialog>
 #include "algorithm.h"

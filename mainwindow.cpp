@@ -59,19 +59,12 @@ MainWindow::MainWindow(QWidget *parent)
       ui->Display->setVerticalHeaderLabels(timeLabels);
       ui->Display->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-
       ui->Display->resize(1000, 1000);
-
-
       currentPage = 0;
-
-
-
-ui->prevPageButton->setEnabled(false);
-ui->nextPageButton->setEnabled(false);
-
-// Allow the window to be maximized
-this->setWindowFlags(this->windowFlags() | Qt::WindowMaximizeButtonHint);
+      ui->prevPageButton->setEnabled(false);
+      ui->nextPageButton->setEnabled(false);
+      // Allow the window to be maximized
+      this->setWindowFlags(this->windowFlags() | Qt::WindowMaximizeButtonHint);
 
 // Set the initial window size (optional)
 this->resize(800, 600); // Adjust the initial size as needed
@@ -186,10 +179,6 @@ void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std:
             ui->Display->setItem(rowIndex, col, item);
         }
     }
-
-
-
-
         // Iterate through the days
         for (const auto &day : days) {
             int col = dayColumnMapping[day]; // Get the column index based on the day
@@ -282,7 +271,11 @@ ui->Display->clearContents();
 
 void MainWindow::on_prevPageButton_clicked()
 {
-
+    for (int row = 0; row < ui->Display->rowCount(); ++row) {
+        for (int col = 0; col < ui->Display->columnCount(); ++col) {
+                ui->Display->setSpan(row, col, 1, 1); // 1x1 span
+        }
+    }
 
     ui->Display->clearContents();
         currentPage--;
@@ -312,6 +305,11 @@ void MainWindow::on_prevPageButton_clicked()
 
 void MainWindow::on_nextPageButton_clicked()
 {
+    for (int row = 0; row < ui->Display->rowCount(); ++row) {
+        for (int col = 0; col < ui->Display->columnCount(); ++col) {
+                ui->Display->setSpan(row, col, 1, 1); // 1x1 span
+        }
+    }
     ui->Display->clearContents();
     currentPage++;
 
