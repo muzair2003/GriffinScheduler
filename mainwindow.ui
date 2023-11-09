@@ -404,6 +404,29 @@
      <string/>
     </property>
    </widget>
+   <widget class="QPushButton" name="PullButton">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>650</y>
+      <width>80</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pull</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="PullSubject">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>610</y>
+      <width>131</width>
+      <height>24</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
