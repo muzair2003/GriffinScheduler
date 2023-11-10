@@ -1,5 +1,6 @@
 #include "slots.h"
 
+
 Slots::Slots(std::vector<Days> day, Type hell, QTime Start, QTime End, QString sub):
     m_Day(day),m_hell(hell),m_Start(Start), m_End(End),m_sub(sub)
 {

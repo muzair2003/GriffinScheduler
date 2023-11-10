@@ -14,339 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="horizontalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>130</y>
-      <width>598</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="Lecture">
-     <item>
-      <widget class="QPushButton" name="LecMondayButton">
-       <property name="text">
-        <string>Monday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LecTuesdayButton">
-       <property name="text">
-        <string>Tuesday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LecWednesdayButton">
-       <property name="text">
-        <string>Wednesday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LecThursdayButton">
-       <property name="text">
-        <string>Thursday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LecFridayButton">
-       <property name="text">
-        <string>Friday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LecSaturdayButton">
-       <property name="text">
-        <string>Saturday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LecSundayButton">
-       <property name="text">
-        <string>Sunday</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QPushButton" name="SubjectList">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>570</y>
-      <width>80</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Add</string>
-    </property>
-   </widget>
-   <widget class="QTimeEdit" name="LecStartTime">
-    <property name="geometry">
-     <rect>
-      <x>150</x>
-      <y>230</y>
-      <width>118</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTimeEdit" name="LecEndTime">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>230</y>
-      <width>118</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="ListSubject">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>80</y>
-      <width>111</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="SubjectEnter">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>40</y>
-      <width>191</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="SubjectAdd">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>40</y>
-      <width>80</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Add</string>
-    </property>
-   </widget>
-   <widget class="QTimeEdit" name="LabStartTime">
-    <property name="geometry">
-     <rect>
-      <x>150</x>
-      <y>370</y>
-      <width>118</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTimeEdit" name="LabEndTime">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>370</y>
-      <width>118</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>270</y>
-      <width>601</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="Lab">
-     <item>
-      <widget class="QPushButton" name="LabMondayButton">
-       <property name="text">
-        <string>Monday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LabTuesdayButton">
-       <property name="text">
-        <string>Tuesday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LabWednesdayButton">
-       <property name="text">
-        <string>Wednesday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LabThursdayButton">
-       <property name="text">
-        <string>Thursday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LabFridayButton">
-       <property name="text">
-        <string>Friday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LabSaturdayButton">
-       <property name="text">
-        <string>Saturday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LabSundayButton">
-       <property name="text">
-        <string>Sunday</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QTimeEdit" name="SemStartTime">
-    <property name="geometry">
-     <rect>
-      <x>150</x>
-      <y>510</y>
-      <width>118</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTimeEdit" name="SemEndTime">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>510</y>
-      <width>118</width>
-      <height>25</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QWidget" name="horizontalLayoutWidget_3">
-    <property name="geometry">
-     <rect>
-      <x>80</x>
-      <y>410</y>
-      <width>601</width>
-      <height>72</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="Seminar">
-     <item>
-      <widget class="QPushButton" name="SemMondayButton">
-       <property name="text">
-        <string>Monday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="SemTuesdayButton">
-       <property name="text">
-        <string>Tuesday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="SemWednesdayButton">
-       <property name="text">
-        <string>Wednesday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="SemThursdayButton">
-       <property name="text">
-        <string>Thursday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="SemFridayButton">
-       <property name="text">
-        <string>Friday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="SemSaturdayButton">
-       <property name="text">
-        <string>Saturday</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="SemSundayButton">
-       <property name="text">
-        <string>Sunday</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QLabel" name="LectureLabel">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>160</y>
-      <width>49</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Lecture</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="LabLabel">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>290</y>
-      <width>49</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Lab</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="SeminarLabel">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>440</y>
-      <width>49</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Seminar</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="AlgorithmButton">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>670</y>
+      <x>470</x>
+      <y>500</y>
       <width>80</width>
       <height>24</height>
      </rect>
@@ -368,8 +40,8 @@
    <widget class="QPushButton" name="prevPageButton">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>610</y>
+      <x>360</x>
+      <y>440</y>
       <width>80</width>
       <height>24</height>
      </rect>
@@ -381,8 +53,8 @@
    <widget class="QPushButton" name="nextPageButton">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>610</y>
+      <x>570</x>
+      <y>440</y>
       <width>80</width>
       <height>24</height>
      </rect>
@@ -394,8 +66,8 @@
    <widget class="QLabel" name="PageNumber">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>610</y>
+      <x>470</x>
+      <y>440</y>
       <width>49</width>
       <height>16</height>
      </rect>
@@ -407,8 +79,8 @@
    <widget class="QPushButton" name="PullButton">
     <property name="geometry">
      <rect>
-      <x>120</x>
-      <y>650</y>
+      <x>450</x>
+      <y>360</y>
       <width>80</width>
       <height>24</height>
      </rect>
@@ -420,8 +92,8 @@
    <widget class="QLineEdit" name="PullSubject">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>610</y>
+      <x>430</x>
+      <y>320</y>
       <width>131</width>
       <height>24</height>
      </rect>

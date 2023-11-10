@@ -88,7 +88,7 @@ try:
                     # If the row is new, add it to the set and write to the CSV
                     seen_rows.add(row_data)
                     writer.writerow(row_data)
-                    print(f"ID: {section_id}, Index: {i}, StartTime: {start_time_element}, EndTime: {end_time_element}, Days: {days_element}, Type: {type_element}")
+                   # print(f"ID: {section_id}, Index: {i}, StartTime: {start_time_element}, EndTime: {end_time_element}, Days: {days_element}, Type: {type_element}")
                 except NoSuchElementException:
                     # If the element does not exist, break the loop and continue with the next ID
                     break

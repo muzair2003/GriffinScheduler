@@ -11,30 +11,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-     LecMondayToggled =false;
-     LecTuesdayToggled=false;
-     LecWednesdayToggled=false;
-     LecThursdayToggled=false;
-     LecFridayToggled=false;
-     LecSaturdayToggled=false;
-     LecSundayToggled=false;
-      LabMondayToggled=false;
-      LabTuesdayToggled=false;
-      LabWednesdayToggled=false;
-      LabThursdayToggled=false;
-      LabFridayToggled=false;
-      LabSaturdayToggled=false;
-      LabSundayToggled=false;
-      SemMondayToggled=false;
-      SemTuesdayToggled=false;
-      SemWednesdayToggled=false;
-      SemThursdayToggled=false;
-      SemFridayToggled=false;
-      SemSaturdayToggled=false;
-      SemSundayToggled=false;
-
-
-
 
       // Set the vertical header labels as hours and 10-minute intervals from 8 AM to 8 PM
       QStringList timeLabels;
@@ -77,64 +53,46 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::Pressed(bool &state,QPushButton &button){
+//void MainWindow::on_SubjectAdd_clicked()
+//{
+
+//QString text = ui->SubjectEnter->text();
+
+//// Create a new Subject object with the entered text
+//Subject* newSubject = new Subject(text);
+
+//// Add the newSubject to a container (e.g., a vector)
+//subjects.push_back(newSubject); // subjects is a std::vector<Subject> defined in your MainWindow class
+
+//ui->ListSubject->addItem(text);
+
+//// Clear the line edit
+//ui->SubjectEnter->clear();
+
+////}
+
+//void MainWindow::on_SubjectList_clicked()
+//{
+//State();
+//QString text = ui->ListSubject->currentText();
+//Slots* lecSlot = new Slots(LecVars, Slots::Lecture, ui->LecStartTime->time(), ui->LecEndTime->time(),text);
+//Slots* labSlot = new Slots(LabVars, Slots::Lab, ui->LabStartTime->time(), ui->LabEndTime->time(),text);
+//Slots* semSlot = new Slots(SemVars, Slots::Seminar, ui->SemStartTime->time(), ui->SemEndTime->time(),text);
+//std::vector<Slots*> Section={};
+//Section.push_back(lecSlot);
+//Section.push_back(labSlot);
+//Section.push_back(semSlot);
 
 
-// Check the toggle state.
-if (state) {
-    // If it's true (button was previously toggled), reset the button style to default.
-    button.setStyleSheet("");
-} else {
-    // If it's false (button was not previously toggled), set the background color to green.
-    button.setStyleSheet("background-color: green;");
-}
-// Toggle the state variable.
-state = !state;
-}
+//for (int i=0;i<subjects.size();i++){
+//    if(subjects[i]->get_name()==text){
+//        subjects[i]->add_Slot(Section);
+//        resetUI();
+//        Section.clear();
+//    }
+//}
 
-
-
-void MainWindow::on_SubjectAdd_clicked()
-{
-
-QString text = ui->SubjectEnter->text();
-
-// Create a new Subject object with the entered text
-Subject* newSubject = new Subject(text);
-
-// Add the newSubject to a container (e.g., a vector)
-subjects.push_back(newSubject); // subjects is a std::vector<Subject> defined in your MainWindow class
-
-ui->ListSubject->addItem(text);
-
-// Clear the line edit
-ui->SubjectEnter->clear();
-
-}
-
-
-void MainWindow::on_SubjectList_clicked()
-{
-State();
-QString text = ui->ListSubject->currentText();
-Slots* lecSlot = new Slots(LecVars, Slots::Lecture, ui->LecStartTime->time(), ui->LecEndTime->time(),text);
-Slots* labSlot = new Slots(LabVars, Slots::Lab, ui->LabStartTime->time(), ui->LabEndTime->time(),text);
-Slots* semSlot = new Slots(SemVars, Slots::Seminar, ui->SemStartTime->time(), ui->SemEndTime->time(),text);
-std::vector<Slots*> Section={};
-Section.push_back(lecSlot);
-Section.push_back(labSlot);
-Section.push_back(semSlot);
-
-
-for (int i=0;i<subjects.size();i++){
-    if(subjects[i]->get_name()==text){
-        subjects[i]->add_Slot(Section);
-        resetUI();
-        Section.clear();
-    }
-}
-
-}
+//}
 
 void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std::vector<Slots::Days> days, Slots::Type what) {
     std::map<Slots::Days, int> dayColumnMapping = {
@@ -228,11 +186,6 @@ void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std:
         }
     }
 
-
-
-
-
-
 void MainWindow::on_AlgorithmButton_clicked()
 {
 
@@ -246,7 +199,9 @@ ui->Display->clearContents();
 
 
     for(int j=0;j<final[currentPage].size();j++){
+            if (final[currentPage][j] != nullptr) {
         InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
+    }
     }
 
 
@@ -266,8 +221,6 @@ ui->Display->clearContents();
 
 
 }
-
-
 
 void MainWindow::on_prevPageButton_clicked()
 {
@@ -298,10 +251,11 @@ void MainWindow::on_prevPageButton_clicked()
     ui->PageNumber->setText("Page " + QString::number(currentPage+1));
 
     for(int j=0;j<final[currentPage].size();j++){
+        if (final[currentPage][j] != nullptr) {
         InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
     }
+    }
 }
-
 
 void MainWindow::on_nextPageButton_clicked()
 {
@@ -333,260 +287,150 @@ void MainWindow::on_nextPageButton_clicked()
     ui->PageNumber->setText("Page " + QString::number(currentPage+1));
 
     for(int j=0;j<final[currentPage].size();j++){
+        if (final[currentPage][j] != nullptr) {
         InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
+    }
     }
 }
 
-
-
-void MainWindow::resetUI() {
-// Reset the QTimes to a default value (e.g., 00:00:00)
-QTime defaultTime(0, 0, 0);
-ui->LecStartTime->setTime(defaultTime);
-ui->LabStartTime->setTime(defaultTime);
-ui->SemStartTime->setTime(defaultTime);
-ui->LecEndTime->setTime(defaultTime);
-ui->LabEndTime->setTime(defaultTime);
-ui->SemEndTime->setTime(defaultTime);
-
-// Reset the button colors to default
-ui->LecMondayButton->setStyleSheet("");
-ui->LecTuesdayButton->setStyleSheet("");
-ui->LecWednesdayButton->setStyleSheet("");
-ui->LecThursdayButton->setStyleSheet("");
-ui->LecFridayButton->setStyleSheet("");
-ui->LecSaturdayButton->setStyleSheet("");
-ui->LecSundayButton->setStyleSheet("");
-
-ui->LabMondayButton->setStyleSheet("");
-ui->LabTuesdayButton->setStyleSheet("");
-ui->LabWednesdayButton->setStyleSheet("");
-ui->LabThursdayButton->setStyleSheet("");
-ui->LabFridayButton->setStyleSheet("");
-ui->LabSaturdayButton->setStyleSheet("");
-ui->LabSundayButton->setStyleSheet("");
-
-ui->SemMondayButton->setStyleSheet("");
-ui->SemTuesdayButton->setStyleSheet("");
-ui->SemWednesdayButton->setStyleSheet("");
-ui->SemThursdayButton->setStyleSheet("");
-ui->SemFridayButton->setStyleSheet("");
-ui->SemSaturdayButton->setStyleSheet("");
-ui->SemSundayButton->setStyleSheet("");
-LecMondayToggled =false;
-LecTuesdayToggled=false;
-LecWednesdayToggled=false;
-LecThursdayToggled=false;
-LecFridayToggled=false;
-LecSaturdayToggled=false;
-LecSundayToggled=false;
-LabMondayToggled=false;
-LabTuesdayToggled=false;
-LabWednesdayToggled=false;
-LabThursdayToggled=false;
-LabFridayToggled=false;
-LabSaturdayToggled=false;
-LabSundayToggled=false;
-SemMondayToggled=false;
-SemTuesdayToggled=false;
-SemWednesdayToggled=false;
-SemThursdayToggled=false;
-SemFridayToggled=false;
-SemSaturdayToggled=false;
-SemSundayToggled=false;
-}
-
-
-void MainWindow::State() {
-LecVars.clear();  // Clear the vector to start with a clean slate
-
-if (LecMondayToggled) {
-    LecVars.push_back(Slots::Monday);
-}
-if (LecTuesdayToggled) {
-    LecVars.push_back(Slots::Tuesday);
-}
-if (LecWednesdayToggled) {
-    LecVars.push_back(Slots::Wednesday);
-}
-if (LecThursdayToggled) {
-    LecVars.push_back(Slots::Thursday);
-}
-if (LecFridayToggled) {
-    LecVars.push_back(Slots::Friday);
-}
-if (LecSaturdayToggled) {
-    LecVars.push_back(Slots::Saturday);
-}
-if (LecSundayToggled) {
-    LecVars.push_back(Slots::Sunday);
-}
-
-// Clear and update LabVars
-LabVars.clear();
-if (LabMondayToggled) {
-    LabVars.push_back(Slots::Monday);
-}
-if (LabTuesdayToggled) {
-    LabVars.push_back(Slots::Tuesday);
-}
-if (LabWednesdayToggled) {
-    LabVars.push_back(Slots::Wednesday);
-}
-if (LabThursdayToggled) {
-    LabVars.push_back(Slots::Thursday);
-}
-if (LabFridayToggled) {
-    LabVars.push_back(Slots::Friday);
-}
-if (LabSaturdayToggled) {
-    LabVars.push_back(Slots::Saturday);
-}
-if (LabSundayToggled) {
-    LabVars.push_back(Slots::Sunday);
-}
-
-// Clear and update SemVars
-SemVars.clear();
-if (SemMondayToggled) {
-    SemVars.push_back(Slots::Monday);
-}
-if (SemTuesdayToggled) {
-    SemVars.push_back(Slots::Tuesday);
-}
-if (SemWednesdayToggled) {
-    SemVars.push_back(Slots::Wednesday);
-}
-if (SemThursdayToggled) {
-    SemVars.push_back(Slots::Thursday);
-}
-if (SemFridayToggled) {
-    SemVars.push_back(Slots::Friday);
-}
-if (SemSaturdayToggled) {
-    SemVars.push_back(Slots::Saturday);
-}
-if (SemSundayToggled) {
-    SemVars.push_back(Slots::Sunday);
-}
-}
-void MainWindow::on_LecMondayButton_clicked()
+void MainWindow::on_PullButton_clicked()
 {
-    Pressed(LecMondayToggled,*ui->LecMondayButton);
+    QString text = ui->PullSubject->text();  // Get the text and trim whitespace
+
+    // Create a new QProcess object
+    QProcess *process = new QProcess(this);
+
+    // Connect the finished and errorOccurred signals to slots
+    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            this, &MainWindow::onProcessFinished);
+    connect(process, &QProcess::errorOccurred,
+            this, &MainWindow::onProcessError);
+
+    // Start the process with the command and arguments
+    process->start("C:\\Python311\\python.exe", QStringList() << "C:\\Users\\muzai\\OneDrive\\Documents\\Schedule\\webscraper.py" << text);
+
+    QMessageBox::information(this, tr("Subject Pull"), tr("Pulling Data"),QMessageBox::NoButton);
+    ui->PullButton->setDisabled(true);
+    ui->PullButton->setText("Pulling");
+
+    // Optional: if you want to delete the QProcess object when it's done
+    connect(process, &QProcess::finished,
+            process, &QObject::deleteLater);
 }
 
-void MainWindow::on_LecTuesdayButton_clicked()
+void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    Pressed(LecTuesdayToggled,*ui->LecTuesdayButton);
+    if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
+        QMessageBox::information(this, tr("Subject Pull"), tr("Subject was pulled successfully."), QMessageBox::Ok);
+    } else {
+        QMessageBox::critical(this, tr("Subject Pull"), tr("Error: Subject was not pulled."), QMessageBox::Ok);
+    }
+    ui->PullButton->setDisabled(false);
+    ui->PullButton->setText("Pull");
+
+
+    QString text = ui->PullSubject->text();
+    Subject* newSubject = new Subject(text);
+
+    std::ifstream file("course_sections.csv");
+    std::string line;
+    std::string currentId;
+
+    // Skip the header
+    std::getline(file, line);
+
+    // Initialize empty slots
+    Slots* lecSlot = nullptr;
+    Slots* labSlot = nullptr;
+    Slots* semSlot = nullptr;
+
+    while (std::getline(file, line)) {
+        std::stringstream ss(line);
+        std::string id, startTime, endTime, daysStr, typeStr;
+
+        std::getline(ss, id, ',');
+        if (currentId.empty()) {
+                currentId = id;
+        } else if (currentId != id) {
+                // If the ID changed, add the slots to the subject and reset them
+                std::vector<Slots*> Section = { lecSlot, labSlot, semSlot };
+                newSubject->add_Slot(Section);
+                // Reset the slots for the next subject
+                lecSlot = nullptr;
+                labSlot = nullptr;
+                semSlot = nullptr;
+                currentId = id;
+        }
+
+        std::getline(ss, startTime, ',');
+        std::getline(ss, endTime, ',');
+        std::getline(ss, daysStr, ',');
+        std::getline(ss, typeStr);
+
+        QTime start = QTime::fromString(QString::fromStdString(startTime), "h:mm AP");
+        QTime end = QTime::fromString(QString::fromStdString(endTime), "h:mm AP");
+
+        if (typeStr == "LEC") {
+                lecSlot = new Slots(parseDays(daysStr), Slots::Lecture, start, end, text);
+        } else if (typeStr == "LAB") {
+                labSlot = new Slots(parseDays(daysStr), Slots::Lab, start, end, text);
+        } else if (typeStr == "SEM") {
+                semSlot = new Slots(parseDays(daysStr), Slots::Seminar, start, end, text);
+        }
+    }
+
+    // Add the last set of slots for the last subject
+    if (!currentId.empty()) {
+        std::vector<Slots*> Section = { lecSlot, labSlot, semSlot };
+        newSubject->add_Slot(Section);
+    }
+
+    // Push back the new subject to the list of subjects
+    subjects.push_back(newSubject);
+
+    file.close();
 }
 
-void MainWindow::on_LecWednesdayButton_clicked()
+
+void MainWindow::onProcessError(QProcess::ProcessError error)
 {
-    Pressed(LecWednesdayToggled,*ui->LecWednesdayButton);
+    // Handle process error here
+    QMessageBox::critical(this, tr("Subject Pull"), tr("An error occurred while trying to pull the subject."), QMessageBox::Ok);
+    ui->PullButton->setDisabled(false);
+    ui->PullButton->setText("Pull");
 }
 
-void MainWindow::on_LecThursdayButton_clicked()
-{
-    Pressed(LecThursdayToggled,*ui->LecThursdayButton);
-}
-void MainWindow::on_LecFridayButton_clicked()
-{
-    Pressed(LecFridayToggled,*ui->LecFridayButton);
-}
+// Function to convert the days string to a vector of Days enums
+std::vector<Slots::Days> MainWindow::parseDays(const std::string& days) {
+    std::vector<Slots::Days> daysVector;
 
-void MainWindow::on_LecSaturdayButton_clicked()
-{
-    Pressed(LecSaturdayToggled,*ui->LecSaturdayButton);
-}
+    // Use a map to associate the day abbreviations with the enum values
+    std::map<std::string, Slots::Days> dayMap = {
+        {"M", Slots::Days::Monday},
+        {"T", Slots::Days::Tuesday},
+        {"W", Slots::Days::Wednesday},
+        {"Th", Slots::Days::Thursday},
+        {"F", Slots::Days::Friday}
+    };
 
-void MainWindow::on_LecSundayButton_clicked()
-{
-    Pressed(LecSundayToggled,*ui->LecSundayButton);
-}
+    // Iterate through the map and check for each day
+    for (const auto& dayPair : dayMap) {
+        // Find each day in the days string
+        if (days.find(dayPair.first) != std::string::npos) {
+                daysVector.push_back(dayPair.second);
+        }
+    }
 
-void MainWindow::on_LabMondayButton_clicked()
-{
-    Pressed(LabMondayToggled,*ui->LabMondayButton);
-}
-
-void MainWindow::on_LabTuesdayButton_clicked()
-{
-    Pressed(LabTuesdayToggled,*ui->LabTuesdayButton);
-}
-
-void MainWindow::on_LabWednesdayButton_clicked()
-{
-    Pressed(LabWednesdayToggled,*ui->LabWednesdayButton);
-}
-
-void MainWindow::on_LabThursdayButton_clicked()
-{
-    Pressed(LabThursdayToggled,*ui->LabThursdayButton);
-}
-
-void MainWindow::on_LabFridayButton_clicked()
-{
-    Pressed(LabFridayToggled,*ui->LabFridayButton);
-}
-
-void MainWindow::on_LabSaturdayButton_clicked()
-{
-    Pressed(LabSaturdayToggled,*ui->LabSaturdayButton);
-}
-
-void MainWindow::on_LabSundayButton_clicked()
-{
-    Pressed(LabSundayToggled,*ui->LabSundayButton);
-}
-
-void MainWindow::on_SemMondayButton_clicked()
-{
-    Pressed(SemMondayToggled, *ui->SemMondayButton);
-}
-
-void MainWindow::on_SemTuesdayButton_clicked()
-{
-    Pressed(SemTuesdayToggled, *ui->SemTuesdayButton);
-}
-
-void MainWindow::on_SemWednesdayButton_clicked()
-{
-    Pressed(SemWednesdayToggled, *ui->SemWednesdayButton);
-}
-
-void MainWindow::on_SemThursdayButton_clicked()
-{
-    Pressed(SemThursdayToggled, *ui->SemThursdayButton);
-}
-
-void MainWindow::on_SemFridayButton_clicked()
-{
-    Pressed(SemFridayToggled, *ui->SemFridayButton);
-}
-
-void MainWindow::on_SemSaturdayButton_clicked()
-{
-    Pressed(SemSaturdayToggled, *ui->SemSaturdayButton);
-}
-
-void MainWindow::on_SemSundayButton_clicked()
-{
-    Pressed(SemSundayToggled, *ui->SemSundayButton);
+    return daysVector;
 }
 
 
 
-
-void MainWindow::on_Display_activated(const QModelIndex &index)
-{
-
-}
-
-
-
-
-void MainWindow::on_openGLWidget_aboutToCompose()
-{
-
-}
+//// Function to convert the type string to Type enum
+//Slots::Type MainWindow::parseType(const std::string& type) {
+//    if (type == "LEC") return Slots::Type::Lecture;
+//    if (type == "LAB") return Slots::Type::Lab;
+//    if (type == "SEM") return Slots::Type::Seminar;
+//    throw std::runtime_error("Unknown type");
+//}
 
