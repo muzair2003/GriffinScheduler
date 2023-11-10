@@ -14,6 +14,9 @@
 #include <vector>
 #include <QString>
 #include <Qtime>
+#include <QRandomGenerator>
+#include <QColor>
+#include <QTime>
 
 
 #include <array>

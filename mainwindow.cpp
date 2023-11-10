@@ -12,38 +12,38 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-      // Set the vertical header labels as hours and 10-minute intervals from 8 AM to 8 PM
-      QStringList timeLabels;
-      for (int hour = 8; hour <= 21; hour++) {
-          QString hourLabel = QString("%1:00").arg(hour, 2, 10, QChar('0'));
-          timeLabels << hourLabel;
+    // Set the vertical header labels as hours and 10-minute intervals from 8 AM to 8 PM
+    QStringList timeLabels;
+    for (int hour = 8; hour <= 21; hour++) {
+        QString hourLabel = QString("%1:00").arg(hour, 2, 10, QChar('0'));
+        timeLabels << hourLabel;
 
-          // Add 10-minute intervals within the hour
-          for (int minute = 10; minute < 60; minute += 10) {
-              QString minuteLabel = "";
-              timeLabels << minuteLabel;
-          }
-      }
-      ui->Display->setRowCount(timeLabels.size()); // Adjust the number of rows accordingly
-      ui->Display->setColumnCount(7);
+        // Add 10-minute intervals within the hour
+        for (int minute = 10; minute < 60; minute += 10) {
+            QString minuteLabel = "";
+            timeLabels << minuteLabel;
+        }
+    }
+    ui->Display->setRowCount(timeLabels.size()); // Adjust the number of rows accordingly
+    ui->Display->setColumnCount(7);
 
-      // Set the horizontal header labels as days of the week starting from Monday
-      QStringList dayLabels;
-      dayLabels << "Monday" << "Tuesday" << "Wednesday" << "Thursday" << "Friday" << "Saturday" << "Sunday";
-      ui->Display->setHorizontalHeaderLabels(dayLabels);
+    // Set the horizontal header labels as days of the week starting from Monday
+    QStringList dayLabels;
+    dayLabels << "Monday" << "Tuesday" << "Wednesday" << "Thursday" << "Friday" << "Saturday" << "Sunday";
+    ui->Display->setHorizontalHeaderLabels(dayLabels);
 
-      ui->Display->setVerticalHeaderLabels(timeLabels);
-      ui->Display->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->Display->setVerticalHeaderLabels(timeLabels);
+    ui->Display->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-      ui->Display->resize(1000, 1000);
-      currentPage = 0;
-      ui->prevPageButton->setEnabled(false);
-      ui->nextPageButton->setEnabled(false);
-      // Allow the window to be maximized
-      this->setWindowFlags(this->windowFlags() | Qt::WindowMaximizeButtonHint);
+    ui->Display->resize(1000, 1000);
+    currentPage = 0;
+    ui->prevPageButton->setEnabled(false);
+    ui->nextPageButton->setEnabled(false);
+    // Allow the window to be maximized
+    this->setWindowFlags(this->windowFlags() | Qt::WindowMaximizeButtonHint);
 
-// Set the initial window size (optional)
-this->resize(800, 600); // Adjust the initial size as needed
+    // Set the initial window size (optional)
+    this->resize(800, 600); // Adjust the initial size as needed
 
 }
 
@@ -137,71 +137,72 @@ void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std:
             ui->Display->setItem(rowIndex, col, item);
         }
     }
-        // Iterate through the days
-        for (const auto &day : days) {
-            int col = dayColumnMapping[day]; // Get the column index based on the day
 
-            // Initialize variables for merging slots
-            QString previousSlotText;
-            int spanStartRow = -1;
-            int spanRowCount = 0;
 
-            // Iterate through the 10-minute intervals
-            for (int i = 0; i < numIntervals; ++i) {
-                // Calculate the time label based on the current interval
-                QTime currentTime = startTime.addSecs(i * 10 * 60); // 10 minutes in seconds
+    // Iterate through the days
+    for (const auto &day : days) {
+        int col = dayColumnMapping[day]; // Get the column index based on the day
 
-                // Calculate the row index based on the time
-                int rowIndex = (currentTime.hour() - 8) * 6 + (currentTime.minute() / 10);
+        // Initialize variables for merging slots
+        QString previousSlotText;
+        int spanStartRow = -1;
+        int spanRowCount = 0;
 
-                // Create the QTableWidgetItem with subject and type
-                QString slotText = subject + " - " + TypeToString[what]; // Combine subject and type
-                QTableWidgetItem *item = new QTableWidgetItem(slotText);
+        // Iterate through the 10-minute intervals
+        for (int i = 0; i < numIntervals; ++i) {
+            // Calculate the time label based on the current interval
+            QTime currentTime = startTime.addSecs(i * 10 * 60); // 10 minutes in seconds
 
-                // Check if the current slot can be merged with the previous one
-                if (previousSlotText == slotText && rowIndex == spanStartRow + spanRowCount) {
-                    // Extend the span
-                    spanRowCount++;
-                } else {
-                    // If not merged, reset the spanStartRow and spanRowCount
-                    if (spanRowCount > 0) {
-                        // Merge by setting a span
-                        ui->Display->setSpan(spanStartRow, col, spanRowCount, 1);
-                    }
-                    spanStartRow = rowIndex;
-                    spanRowCount = 1;
+            // Calculate the row index based on the time
+            int rowIndex = (currentTime.hour() - 8) * 6 + (currentTime.minute() / 10);
+
+            // Create the QTableWidgetItem with subject and type
+            QString slotText = subject + " - " + TypeToString[what]; // Combine subject and type
+            QTableWidgetItem *item = new QTableWidgetItem(slotText);
+            // Check if the current slot can be merged with the previous one
+            if (previousSlotText == slotText && rowIndex == spanStartRow + spanRowCount) {
+                // Extend the span
+                spanRowCount++;
+            } else {
+                // If not merged, reset the spanStartRow and spanRowCount
+                if (spanRowCount > 0) {
+                    // Merge by setting a span
+                    ui->Display->setSpan(spanStartRow, col, spanRowCount, 1);
                 }
-
-                // Add the item to the table
-                ui->Display->setItem(rowIndex, col, item);
-
-                // Update previous slot text
-                previousSlotText = slotText;
+                spanStartRow = rowIndex;
+                spanRowCount = 1;
             }
 
-            // Merge any remaining slots at the end of the column
-            if (spanRowCount > 0) {
-                ui->Display->setSpan(spanStartRow, col, spanRowCount, 1);
-            }
+            // Add the item to the table
+            ui->Display->setItem(rowIndex, col, item);
+
+            // Update previous slot text
+            previousSlotText = slotText;
+        }
+
+        // Merge any remaining slots at the end of the column
+        if (spanRowCount > 0) {
+            ui->Display->setSpan(spanStartRow, col, spanRowCount, 1);
         }
     }
+}
 
 void MainWindow::on_AlgorithmButton_clicked()
 {
 
-final = newAlg->Solve(subjects);
-maxPage = final.size()-1;
+    final = newAlg->Solve(subjects);
+    maxPage = final.size()-1;
 
-ui->PageNumber->setText("Page " + QString::number(currentPage+1));
+    ui->PageNumber->setText("Page " + QString::number(currentPage+1));
 
 
-ui->Display->clearContents();
+    ui->Display->clearContents();
 
 
     for(int j=0;j<final[currentPage].size();j++){
-            if (final[currentPage][j] != nullptr) {
-        InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
-    }
+        if (final[currentPage][j] != nullptr) {
+            InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
+        }
     }
 
 
@@ -226,12 +227,12 @@ void MainWindow::on_prevPageButton_clicked()
 {
     for (int row = 0; row < ui->Display->rowCount(); ++row) {
         for (int col = 0; col < ui->Display->columnCount(); ++col) {
-                ui->Display->setSpan(row, col, 1, 1); // 1x1 span
+            ui->Display->setSpan(row, col, 1, 1); // 1x1 span
         }
     }
 
     ui->Display->clearContents();
-        currentPage--;
+    currentPage--;
     if(currentPage==0){
         ui->prevPageButton->setEnabled(false);
     }
@@ -252,8 +253,8 @@ void MainWindow::on_prevPageButton_clicked()
 
     for(int j=0;j<final[currentPage].size();j++){
         if (final[currentPage][j] != nullptr) {
-        InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
-    }
+            InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
+        }
     }
 }
 
@@ -261,7 +262,7 @@ void MainWindow::on_nextPageButton_clicked()
 {
     for (int row = 0; row < ui->Display->rowCount(); ++row) {
         for (int col = 0; col < ui->Display->columnCount(); ++col) {
-                ui->Display->setSpan(row, col, 1, 1); // 1x1 span
+            ui->Display->setSpan(row, col, 1, 1); // 1x1 span
         }
     }
     ui->Display->clearContents();
@@ -288,8 +289,8 @@ void MainWindow::on_nextPageButton_clicked()
 
     for(int j=0;j<final[currentPage].size();j++){
         if (final[currentPage][j] != nullptr) {
-        InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
-    }
+            InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
+        }
     }
 }
 
@@ -325,7 +326,8 @@ void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
 
 
     QString text = ui->PullSubject->text();
-    Subject* newSubject = new Subject(text);
+    QColor color = QColor::fromRgb(QRandomGenerator::global()->generate());
+    Subject* newSubject = new Subject(text,color);
 
     std::ifstream file("course_sections.csv");
     std::string line;
@@ -345,16 +347,16 @@ void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
 
         std::getline(ss, id, ',');
         if (currentId.empty()) {
-                currentId = id;
+            currentId = id;
         } else if (currentId != id) {
-                // If the ID changed, add the slots to the subject and reset them
-                std::vector<Slots*> Section = { lecSlot, labSlot, semSlot };
-                newSubject->add_Slot(Section);
-                // Reset the slots for the next subject
-                lecSlot = nullptr;
-                labSlot = nullptr;
-                semSlot = nullptr;
-                currentId = id;
+            // If the ID changed, add the slots to the subject and reset them
+            std::vector<Slots*> Section = { lecSlot, labSlot, semSlot };
+            newSubject->add_Slot(Section);
+            // Reset the slots for the next subject
+            lecSlot = nullptr;
+            labSlot = nullptr;
+            semSlot = nullptr;
+            currentId = id;
         }
 
         std::getline(ss, startTime, ',');
@@ -366,11 +368,11 @@ void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
         QTime end = QTime::fromString(QString::fromStdString(endTime), "h:mm AP");
 
         if (typeStr == "LEC") {
-                lecSlot = new Slots(parseDays(daysStr), Slots::Lecture, start, end, text);
+            lecSlot = new Slots(parseDays(daysStr), Slots::Lecture, start, end, text);
         } else if (typeStr == "LAB") {
-                labSlot = new Slots(parseDays(daysStr), Slots::Lab, start, end, text);
+            labSlot = new Slots(parseDays(daysStr), Slots::Lab, start, end, text);
         } else if (typeStr == "SEM") {
-                semSlot = new Slots(parseDays(daysStr), Slots::Seminar, start, end, text);
+            semSlot = new Slots(parseDays(daysStr), Slots::Seminar, start, end, text);
         }
     }
 
@@ -419,7 +421,7 @@ std::vector<Slots::Days> MainWindow::parseDays(const std::string& days) {
     for (const auto& dayPair : dayMap) {
         // Find each day in the days string
         if (days.find(dayPair.first) != std::string::npos) {
-                daysVector.push_back(dayPair.second);
+            daysVector.push_back(dayPair.second);
         }
     }
 
@@ -435,4 +437,5 @@ std::vector<Slots::Days> MainWindow::parseDays(const std::string& days) {
 //    if (type == "SEM") return Slots::Type::Seminar;
 //    throw std::runtime_error("Unknown type");
 //}
+
 

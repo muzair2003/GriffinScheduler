@@ -1,7 +1,7 @@
 #include "subject.h"
 
-Subject::Subject(QString Name):
-    m_Name(Name)
+Subject::Subject(QString Name,QColor color):
+    m_Name(Name),m_color(color)
 {
 
 }
@@ -14,6 +14,10 @@ void Subject::add_Slot(std::vector <Slots*> section){
 
 QString Subject::get_name(){
     return m_Name;
+}
+
+QColor Subject::get_color(){
+    return m_color;
 }
 
 std::vector <Slots*> Subject::GetAllSlots(int row){
