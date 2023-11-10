@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 
       // Set the vertical header labels as hours and 10-minute intervals from 8 AM to 8 PM
       QStringList timeLabels;
-      for (int hour = 8; hour <= 20; hour++) {
+      for (int hour = 8; hour <= 21; hour++) {
           QString hourLabel = QString("%1:00").arg(hour, 2, 10, QChar('0'));
           timeLabels << hourLabel;
 
@@ -115,7 +115,7 @@ void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std:
     QTime endTime = times.second;
 
     // Calculate the number of 10-minute intervals for the slot
-    int numIntervals = (endTime.hour() - startTime.hour()) * 6; // 6 intervals in an hour (10 minutes each)
+    int numIntervals = ((endTime.hour() * 60 + endTime.minute()) - (startTime.hour() * 60 + startTime.minute())) / 10;
 
     // Iterate through the days
     for (const auto &day : days) {
@@ -307,7 +307,7 @@ void MainWindow::on_PullButton_clicked()
             this, &MainWindow::onProcessError);
 
     // Start the process with the command and arguments
-    process->start("C:\\Python311\\python.exe", QStringList() << "C:\\Users\\muzai\\OneDrive\\Documents\\Schedule\\webscraper.py" << text);
+    process->start("C:\\Users\\muzai\\AppData\\Local\\Programs\\Python\\Python312\\python.exe", QStringList() << "C:\\Users\\muzai\\OneDrive\\Documents\\Schedule\\webscraper.py" << text);
 
     QMessageBox::information(this, tr("Subject Pull"), tr("Pulling Data"),QMessageBox::NoButton);
     ui->PullButton->setDisabled(true);
@@ -320,11 +320,6 @@ void MainWindow::on_PullButton_clicked()
 
 void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
-        QMessageBox::information(this, tr("Subject Pull"), tr("Subject was pulled successfully."), QMessageBox::Ok);
-    } else {
-        QMessageBox::critical(this, tr("Subject Pull"), tr("Error: Subject was not pulled."), QMessageBox::Ok);
-    }
     ui->PullButton->setDisabled(false);
     ui->PullButton->setText("Pull");
 
@@ -389,6 +384,13 @@ void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
     subjects.push_back(newSubject);
 
     file.close();
+
+    if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
+        QMessageBox::information(this, tr("Subject Pull"), tr("Subject was pulled successfully."), QMessageBox::Ok);
+    } else {
+        QMessageBox::critical(this, tr("Subject Pull"), tr("Error: Subject was not pulled."), QMessageBox::Ok);
+    }
+
 }
 
 
@@ -407,7 +409,7 @@ std::vector<Slots::Days> MainWindow::parseDays(const std::string& days) {
     // Use a map to associate the day abbreviations with the enum values
     std::map<std::string, Slots::Days> dayMap = {
         {"M", Slots::Days::Monday},
-        {"T", Slots::Days::Tuesday},
+        {"Tu", Slots::Days::Tuesday},
         {"W", Slots::Days::Wednesday},
         {"Th", Slots::Days::Thursday},
         {"F", Slots::Days::Friday}

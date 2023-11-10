@@ -76,6 +76,8 @@ try:
                     # If the type is 'EXAM', skip this row and continue with the next iteration
                     if type_element == "EXAM":
                         continue
+                    if days_element == 'T':
+                        days_element = 'Tu'
 
                     # Create a tuple of the row data
                     row_data = (section_id, start_time_element, end_time_element, days_element, type_element)
@@ -88,7 +90,7 @@ try:
                     # If the row is new, add it to the set and write to the CSV
                     seen_rows.add(row_data)
                     writer.writerow(row_data)
-                   # print(f"ID: {section_id}, Index: {i}, StartTime: {start_time_element}, EndTime: {end_time_element}, Days: {days_element}, Type: {type_element}")
+                    print(f"ID: {section_id}, Index: {i}, StartTime: {start_time_element}, EndTime: {end_time_element}, Days: {days_element}, Type: {type_element}")
                 except NoSuchElementException:
                     # If the element does not exist, break the loop and continue with the next ID
                     break
