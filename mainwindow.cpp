@@ -297,27 +297,36 @@ void MainWindow::on_nextPageButton_clicked()
 void MainWindow::on_PullButton_clicked()
 {
     QString text = ui->PullSubject->text();  // Get the text and trim whitespace
+    text.replace(" ", "_");
+    std::string filename = text.toStdString() + ".csv";
 
-    // Create a new QProcess object
-    QProcess *process = new QProcess(this);
+    if (std::filesystem::exists(filename)) {
+        // The file already exists, so you can go straight to processing the file
+        // Call your processing finished functions here
+        onProcessFinished(0, QProcess::NormalExit); // Example call, adjust according to your actual function
+    } else {
+        // Create a new QProcess object
+        QProcess *process = new QProcess(this);
 
-    // Connect the finished and errorOccurred signals to slots
-    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            this, &MainWindow::onProcessFinished);
-    connect(process, &QProcess::errorOccurred,
-            this, &MainWindow::onProcessError);
+        // Connect the finished and errorOccurred signals to slots
+        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+                this, &MainWindow::onProcessFinished);
+        connect(process, &QProcess::errorOccurred,
+                this, &MainWindow::onProcessError);
+        text.replace("_", " ");
+        // Start the process with the command and arguments
+        process->start("python", QStringList() << "C:\\Users\\muzai\\OneDrive\\Documents\\Schedule\\webscraper.py" << text);
 
-    // Start the process with the command and arguments
-    process->start("C:\\Users\\muzai\\AppData\\Local\\Programs\\Python\\Python312\\python.exe", QStringList() << "C:\\Users\\muzai\\OneDrive\\Documents\\Schedule\\webscraper.py" << text);
+        QMessageBox::information(this, tr("Subject Pull"), tr("Pulling Data"),QMessageBox::NoButton);
+        ui->PullButton->setDisabled(true);
+        ui->PullButton->setText("Pulling");
 
-    QMessageBox::information(this, tr("Subject Pull"), tr("Pulling Data"),QMessageBox::NoButton);
-    ui->PullButton->setDisabled(true);
-    ui->PullButton->setText("Pulling");
-
-    // Optional: if you want to delete the QProcess object when it's done
-    connect(process, &QProcess::finished,
-            process, &QObject::deleteLater);
+        // Optional: if you want to delete the QProcess object when it's done
+        connect(process, &QProcess::finished,
+                process, &QObject::deleteLater);
+    }
 }
+
 
 void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
@@ -329,7 +338,9 @@ void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
     QColor color = QColor::fromRgb(QRandomGenerator::global()->generate());
     Subject* newSubject = new Subject(text,color);
 
-    std::ifstream file("course_sections.csv");
+    text.replace(" ", "_");
+    std::string filename = text.toStdString() + ".csv";  // Convert to std::string and append .csv
+    std::ifstream file(filename);
     std::string line;
     std::string currentId;
 
@@ -366,7 +377,7 @@ void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
 
         QTime start = QTime::fromString(QString::fromStdString(startTime), "h:mm AP");
         QTime end = QTime::fromString(QString::fromStdString(endTime), "h:mm AP");
-
+        text.replace("_", " ");
         if (typeStr == "LEC") {
             lecSlot = new Slots(parseDays(daysStr), Slots::Lecture, start, end, text);
         } else if (typeStr == "LAB") {
