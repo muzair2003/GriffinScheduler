@@ -18,9 +18,9 @@ public:
 private:
     void BackTrack(std::vector<Subject*> all, int current_subject_index,int previous_index);
     bool IsValid(std::vector<Slots*> one, std::vector<Slots*> two);
-        std::vector<Slots*> current_schedule;
+        std::vector<Slots*> currentSchedule;
 
-    std::vector<std::vector<Slots*>> all_schedules;
+    std::vector<std::vector<Slots*>> allSchedules;
 };
 
 #endif // ALGORITHM_H

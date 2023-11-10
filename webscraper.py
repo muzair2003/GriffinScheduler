@@ -80,12 +80,13 @@ try:
                     section_id,
                     driver.find_element(By.ID, f'section-{section_id}-meeting-times-start-{i}').text,
                     driver.find_element(By.ID, f'section-{section_id}-meeting-times-end-{i}').text,
-                    driver.find_element(By.ID, f'section-{section_id}-meeting-days-{i}').text.replace('T', 'Tu'),
+                    driver.find_element(By.ID, f'section-{section_id}-meeting-days-{i}').text.replace("T", "Tu"),
                     driver.find_element(By.ID, f'section-{section_id}-meeting-instructional-method-{i}').text
                     )
                     # If the type is 'EXAM', skip this row and continue with the next iteration
                     if row_data[-1] == "EXAM":
                         continue
+
                     # Check if the tuple is in the set of seen rows
                     if row_data in seen_rows:
                         # If it is, skip this row as it's a duplicate
