@@ -12,7 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    //ui->centralwidget->layout()->setMargin(0);
+    QFont fnt;
     // Set the vertical header labels as hours and 10-minute intervals from 8 AM to 8 PM
     QStringList timeLabels;
     for (int hour = 8; hour <= 20; hour++) { // Loop from 8 AM to 8 PM
@@ -28,6 +29,9 @@ MainWindow::MainWindow(QWidget *parent)
             timeLabels << minuteLabel;
         }
     }
+    fnt.setPointSize(5);
+    fnt.setFamily("Arial");
+    ui->Display->setFont(fnt);
 
 
     ui->Display->setRowCount(timeLabels.size()); // Adjust the number of rows accordingly
@@ -62,8 +66,16 @@ MainWindow::MainWindow(QWidget *parent)
     //        ui->Display->setColumnWidth(i, columnWidth);
     //    }
 
+    ui->centralwidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
 
-    // this->showFullScreen();
+    this->showFullScreen();
+
+    ui->Display->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
+
+    QHeaderView *verticalHeader = ui->Display->verticalHeader();
+    verticalHeader->setSectionResizeMode(QHeaderView::Fixed);
+    verticalHeader->setDefaultSectionSize(5);
 }
 
 
