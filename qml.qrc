@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>Timetable.qml</file>
-    </qresource>
-</RCC>

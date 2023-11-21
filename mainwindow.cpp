@@ -12,15 +12,14 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //ui->centralwidget->layout()->setMargin(0);
     QFont fnt;
     // Set the vertical header labels as hours and 10-minute intervals from 8 AM to 8 PM
     QStringList timeLabels;
-    for (int hour = 8; hour <= 20; hour++) { // Loop from 8 AM to 8 PM
+    for (int hour = 8; hour <= 19; hour++) { // Loop from 8 AM to 8 PM
         // Convert 24-hour time to 12-hour time and append AM or PM
         int displayHour = (hour > 12) ? (hour - 12) : hour;
         QString amPm = (hour < 12) ? "AM" : "PM";
-        QString hourLabel = QString("%1:00 %2").arg(displayHour, 2, 10, QChar('0')).arg(amPm);
+        QString hourLabel = QString("%1%2").arg(displayHour, 2, 10).arg(amPm);
         timeLabels << hourLabel;
 
         // Add 10-minute intervals within the hour
@@ -32,99 +31,26 @@ MainWindow::MainWindow(QWidget *parent)
     fnt.setPointSize(5);
     fnt.setFamily("Arial");
     ui->Display->setFont(fnt);
-
-
     ui->Display->setRowCount(timeLabels.size()); // Adjust the number of rows accordingly
     ui->Display->setColumnCount(7);
-
-
-    // Set the horizontal header labels as days of the week starting from Monday
     QStringList dayLabels;
     dayLabels << "Monday" << "Tuesday" << "Wednesday" << "Thursday" << "Friday" << "Saturday" << "Sunday";
     ui->Display->setHorizontalHeaderLabels(dayLabels);
     ui->Display->setVerticalHeaderLabels(timeLabels);
-    //ui->Display->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-
     currentPage = 0;
     ui->prevPageButton->setEnabled(false);
     ui->nextPageButton->setEnabled(false);
-    // Allow the window to be maximized
-    this->setWindowFlags(this->windowFlags() | Qt::WindowMaximizeButtonHint);
-
-    // Set the initial window size (optional)
-    //    int availableHeight = ui->Display->height(); // Get the available height for the QTableWidget
-    //    int numRows = ui->Display->rowCount(); // Get the number of rows
-    //    int rowHeight = availableHeight / numRows;
-    //    int totalWidth = ui->Display->width();  // Get the total width of the QTableWidget
-    //    int numColumns = ui->Display->columnCount();  // Get the number of columns
-    //    int columnWidth = totalWidth / numColumns;  // Calculate the width for each column
-
-    //    for (int i = 0; i < numRows; ++i) {
-    //        ui->Display->setRowHeight(i, rowHeight); // Set the height for each row
-    //    }
-    //    for (int i = 0; i < numColumns; ++i) {
-    //        ui->Display->setColumnWidth(i, columnWidth);
-    //    }
-
-    ui->centralwidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
-
     this->showFullScreen();
-
     ui->Display->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-
-
     QHeaderView *verticalHeader = ui->Display->verticalHeader();
-    verticalHeader->setSectionResizeMode(QHeaderView::Fixed);
+    verticalHeader->setSectionResizeMode(QHeaderView::Stretch);
     verticalHeader->setDefaultSectionSize(5);
 }
-
-
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-//void MainWindow::on_SubjectAdd_clicked()
-//{
-
-//QString text = ui->SubjectEnter->text();
-
-//// Create a new Subject object with the entered text
-//Subject* newSubject = new Subject(text);
-
-//// Add the newSubject to a container (e.g., a vector)
-//subjects.push_back(newSubject); // subjects is a std::vector<Subject> defined in your MainWindow class
-
-//ui->ListSubject->addItem(text);
-
-//// Clear the line edit
-//ui->SubjectEnter->clear();
-
-////}
-
-//void MainWindow::on_SubjectList_clicked()
-//{
-//State();
-//QString text = ui->ListSubject->currentText();
-//Slots* lecSlot = new Slots(LecVars, Slots::Lecture, ui->LecStartTime->time(), ui->LecEndTime->time(),text);
-//Slots* labSlot = new Slots(LabVars, Slots::Lab, ui->LabStartTime->time(), ui->LabEndTime->time(),text);
-//Slots* semSlot = new Slots(SemVars, Slots::Seminar, ui->SemStartTime->time(), ui->SemEndTime->time(),text);
-//std::vector<Slots*> Section={};
-//Section.push_back(lecSlot);
-//Section.push_back(labSlot);
-//Section.push_back(semSlot);
-
-
-//for (int i=0;i<subjects.size();i++){
-//    if(subjects[i]->get_name()==text){
-//        subjects[i]->add_Slot(Section);
-//        resetUI();
-//        Section.clear();
-//    }
-//}
-
-//}
 
 void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std::vector<Slots::Days> days, Slots::Type what) {
     // Mapping from days to column indices
@@ -349,7 +275,6 @@ void MainWindow::on_PullButton_clicked()
     }
 }
 
-
 void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
     ui->PullButton->setDisabled(false);
@@ -428,7 +353,6 @@ void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
 
 }
 
-
 void MainWindow::onProcessError(QProcess::ProcessError error)
 {
     // Handle process error here
@@ -437,7 +361,6 @@ void MainWindow::onProcessError(QProcess::ProcessError error)
     ui->PullButton->setText("Pull");
 }
 
-// Function to convert the days string to a vector of Days enums
 std::vector<Slots::Days> MainWindow::parseDays(const std::string& days) {
     std::vector<Slots::Days> daysVector;
 
@@ -460,14 +383,3 @@ std::vector<Slots::Days> MainWindow::parseDays(const std::string& days) {
 
     return daysVector;
 }
-
-
-
-//// Function to convert the type string to Type enum
-//Slots::Type MainWindow::parseType(const std::string& type) {
-//    if (type == "LEC") return Slots::Type::Lecture;
-//    if (type == "LAB") return Slots::Type::Lab;
-//    if (type == "SEM") return Slots::Type::Seminar;
-//    throw std::runtime_error("Unknown type");
-//}
-
