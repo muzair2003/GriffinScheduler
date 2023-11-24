@@ -76,11 +76,15 @@ try:
             # Handle up to 4 meeting-times (0 to 3)
             for i in range(4):
                 try:
+                    days_text = driver.find_element(By.ID, f'section-{section_id}-meeting-days-{i}').text
+                    days_text = re.sub(r'T(?!h)', 'Tu', days_text)
+
+
                     row_data = (
                     section_id,
                     driver.find_element(By.ID, f'section-{section_id}-meeting-times-start-{i}').text,
                     driver.find_element(By.ID, f'section-{section_id}-meeting-times-end-{i}').text,
-                    driver.find_element(By.ID, f'section-{section_id}-meeting-days-{i}').text.replace("T", "Tu"),
+                    days_text,
                     driver.find_element(By.ID, f'section-{section_id}-meeting-instructional-method-{i}').text
                     )
                     # If the type is 'EXAM', skip this row and continue with the next iteration
