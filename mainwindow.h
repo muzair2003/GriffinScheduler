@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "qpushbutton.h"
 #include <QMainWindow>
 #include "subject.h"
 #include<QTableWidgetItem>
@@ -56,6 +55,7 @@ private slots:
     void on_nextPageButton_clicked();
 
     void on_PullButton_clicked();
+    void show_slots();
 
 private:
       Algorithm* newAlg = new Algorithm();

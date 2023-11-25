@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     currentPage = 0;
     ui->prevPageButton->setEnabled(false);
     ui->nextPageButton->setEnabled(false);
-    this->showFullScreen();
+    //this->showFullScreen();
     ui->Display->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     QHeaderView *verticalHeader = ui->Display->verticalHeader();
     verticalHeader->setSectionResizeMode(QHeaderView::Stretch);
@@ -132,16 +132,10 @@ void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std:
         }
     }
 }
-
-void MainWindow::on_AlgorithmButton_clicked()
+void MainWindow::show_slots()
 {
 
-    final = newAlg->Solve(subjects);
-    maxPage = final.size()-1;
-
     ui->PageNumber->setText("Page " + QString::number(currentPage+1));
-
-
     ui->Display->clearContents();
 
 
@@ -164,7 +158,16 @@ void MainWindow::on_AlgorithmButton_clicked()
     }
     else{
         ui->nextPageButton->setEnabled(true);
-    }
+
+}
+}
+void MainWindow::on_AlgorithmButton_clicked()
+{
+
+    final = newAlg->Solve(subjects);
+    maxPage = final.size()-1;
+
+    show_slots();
 
 
 }
@@ -176,32 +179,8 @@ void MainWindow::on_prevPageButton_clicked()
             ui->Display->setSpan(row, col, 1, 1); // 1x1 span
         }
     }
-
-    ui->Display->clearContents();
     currentPage--;
-    if(currentPage==0){
-        ui->prevPageButton->setEnabled(false);
-    }
-    else{
-        ui->prevPageButton->setEnabled(true);
-
-    }
-    if(currentPage == maxPage){
-        ui->nextPageButton->setEnabled(false);
-    }
-    else{
-        ui->nextPageButton->setEnabled(true);
-
-    }
-
-
-    ui->PageNumber->setText("Page " + QString::number(currentPage+1));
-
-    for(int j=0;j<final[currentPage].size();j++){
-        if (final[currentPage][j] != nullptr) {
-            InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
-        }
-    }
+    show_slots();
 }
 
 void MainWindow::on_nextPageButton_clicked()
@@ -211,33 +190,8 @@ void MainWindow::on_nextPageButton_clicked()
             ui->Display->setSpan(row, col, 1, 1); // 1x1 span
         }
     }
-    ui->Display->clearContents();
     currentPage++;
-
-
-    if(currentPage==0){
-        ui->prevPageButton->setEnabled(false);
-    }
-    else{
-        ui->prevPageButton->setEnabled(true);
-
-    }
-    if(currentPage == maxPage){
-        ui->nextPageButton->setEnabled(false);
-    }
-    else{
-        ui->nextPageButton->setEnabled(true);
-
-    }
-
-
-    ui->PageNumber->setText("Page " + QString::number(currentPage+1));
-
-    for(int j=0;j<final[currentPage].size();j++){
-        if (final[currentPage][j] != nullptr) {
-            InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
-        }
-    }
+    show_slots();
 }
 
 void MainWindow::on_PullButton_clicked()
@@ -264,8 +218,6 @@ void MainWindow::on_PullButton_clicked()
         QString appPath = QCoreApplication::applicationDirPath();
         QString scriptPath = appPath + "/webscraper.py";  // Assuming the script is in the same directory as the executable
         process->start("python", QStringList() << scriptPath << text);
-
-        QMessageBox::information(this, tr("Subject Pull"), tr("Pulling Data"),QMessageBox::NoButton);
         ui->PullButton->setDisabled(true);
         ui->PullButton->setText("Pulling");
 
@@ -277,8 +229,8 @@ void MainWindow::on_PullButton_clicked()
 
 void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-    ui->PullButton->setDisabled(false);
-    ui->PullButton->setText("Pull");
+
+    if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
 
 
     QString text = ui->PullSubject->text();
@@ -345,12 +297,12 @@ void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
 
     file.close();
 
-    if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
-        QMessageBox::information(this, tr("Subject Pull"), tr("Subject was pulled successfully."), QMessageBox::Ok);
+    QMessageBox::information(this, tr("Subject Pull"), tr("Subject was pulled successfully."), QMessageBox::Ok);
     } else {
         QMessageBox::critical(this, tr("Subject Pull"), tr("Error: Subject was not pulled."), QMessageBox::Ok);
     }
-
+    ui->PullButton->setDisabled(false);
+    ui->PullButton->setText("Pull");
 }
 
 void MainWindow::onProcessError(QProcess::ProcessError error)
