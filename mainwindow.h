@@ -40,7 +40,7 @@ public:
 
 private slots:
 
-    void InsertSlot(QString subject,std::pair<QTime,QTime> times,std::vector<Slots::Days> days,Slots::Type what);
+    void InsertSlot(QString subject,std::pair<QTime,QTime> times,std::vector<Slots::Days> days,Slots::Type what,QString section);
 
     //void on_SubjectAdd_clicked();
 

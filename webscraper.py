@@ -56,12 +56,13 @@ try:
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, "//*[contains(@id,'section-') and contains(@id,'-meeting-')]"))
     )
+    
 
         # Open a new CSV file to write into
     with open(f'{course_code.replace(" ", "_")}.csv', mode='w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         # Write the header to the CSV file
-        writer.writerow(['ID', 'StartTime', 'EndTime', 'Days', 'Type'])
+        writer.writerow(['Section', 'StartTime', 'EndTime', 'Days', 'Type'])
 
         # Initialize an empty set to keep track of unique rows
         seen_rows = set()
@@ -73,6 +74,9 @@ try:
         row_data=[]
         # For each unique ID, find all related details
         for section_id in unique_ids:
+            full_section_text = driver.find_element(By.ID, f'section-{section_id}').text
+            # Remove the course_code part from the text
+            section = full_section_text.replace(course_code.replace(' ', '*') + '*', '')
             # Handle up to 4 meeting-times (0 to 3)
             for i in range(4):
                 try:
@@ -81,7 +85,7 @@ try:
 
 
                     row_data = (
-                    section_id,
+                    section,
                     driver.find_element(By.ID, f'section-{section_id}-meeting-times-start-{i}').text,
                     driver.find_element(By.ID, f'section-{section_id}-meeting-times-end-{i}').text,
                     days_text,
@@ -99,7 +103,7 @@ try:
                     # If the row is new, add it to the set and write to the CSV
                     seen_rows.add(row_data)
                     writer.writerow(row_data)
-                    #print(f"ID: {section_id}, Index: {i}, StartTime: {row_data[1]}, EndTime: {row_data[2]}, Days: {row_data[3]}, Type: {row_data[4]}")
+                    #print(f"ID: {section}, Index: {i}, StartTime: {row_data[1]}, EndTime: {row_data[2]}, Days: {row_data[3]}, Type: {row_data[4]}")
                 except NoSuchElementException:
                     # If the element does not exist, break the loop and continue with the next ID
                     break

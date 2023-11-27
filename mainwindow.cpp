@@ -19,17 +19,16 @@ MainWindow::MainWindow(QWidget *parent)
         // Convert 24-hour time to 12-hour time and append AM or PM
         int displayHour = (hour > 12) ? (hour - 12) : hour;
         QString amPm = (hour < 12) ? "AM" : "PM";
-        QString hourLabel = QString("%1%2").arg(displayHour, 2, 10).arg(amPm);
-        timeLabels << hourLabel;
+        timeLabels << QString::number(displayHour); // Hour on one row
+        timeLabels << amPm;
 
         // Add 10-minute intervals within the hour
-        for (int minute = 10; minute < 60; minute += 10) {
-            QString minuteLabel = QString("");
-            timeLabels << minuteLabel;
+        for (int minute = 10; minute < 50; minute += 10) {
+            timeLabels << "";
         }
     }
     fnt.setPointSize(5);
-    fnt.setFamily("Arial");
+
     ui->Display->setFont(fnt);
     ui->Display->setRowCount(timeLabels.size()); // Adjust the number of rows accordingly
     ui->Display->setColumnCount(7);
@@ -40,11 +39,13 @@ MainWindow::MainWindow(QWidget *parent)
     currentPage = 0;
     ui->prevPageButton->setEnabled(false);
     ui->nextPageButton->setEnabled(false);
-    //this->showFullScreen();
     ui->Display->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     QHeaderView *verticalHeader = ui->Display->verticalHeader();
     verticalHeader->setSectionResizeMode(QHeaderView::Stretch);
-    verticalHeader->setDefaultSectionSize(5);
+    verticalHeader->setDefaultSectionSize(1);
+    QFont font;
+    font.setPointSize(15);
+    ui->Display->horizontalHeader()->setFont(font);
 }
 
 MainWindow::~MainWindow()
@@ -52,7 +53,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std::vector<Slots::Days> days, Slots::Type what) {
+void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std::vector<Slots::Days> days, Slots::Type what,QString section) {
     // Mapping from days to column indices
     std::map<Slots::Days, int> dayColumnMapping = {
         {Slots::Monday, 0}, {Slots::Tuesday, 1}, {Slots::Wednesday, 2},
@@ -67,6 +68,8 @@ void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std:
     QTime startTime = times.first;
     QTime endTime = times.second;
 
+    QFont mergedCellFont;
+    mergedCellFont.setPointSize(15);
     // Validate time range
     if (startTime >= endTime) {
         qDebug() << "Invalid time range";
@@ -99,15 +102,15 @@ void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std:
 
         for (int i = 0; i < numIntervals; ++i) {
             QTime currentTime = startTime.addSecs(i * 600); // 10 minutes in seconds
-            int rowIndex = (currentTime.hour() - 8) * 6 + (currentTime.minute() / 10);
+            int rowIndex = ((currentTime.hour() - 8) * 6) + (currentTime.minute() / 10)+1;
 
-            QString slotText = subject + " - " + TypeToString[what];
+            QString slotText = subject + " - " + section + " - " + TypeToString[what];
             QTableWidgetItem *item = ui->Display->item(rowIndex, col);
             if (!item) {
                 item = new QTableWidgetItem(slotText);
                 ui->Display->setItem(rowIndex, col, item);
             }
-
+            item->setFont(mergedCellFont);
             // Check for the need to merge
             if (previousSlotText == slotText && rowIndex == spanStartRow + spanRowCount) {
                 spanRowCount++;
@@ -116,7 +119,10 @@ void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std:
                     ui->Display->setSpan(spanStartRow, col, spanRowCount, 1);
                     // Mark these rows as merged
                     for (int r = spanStartRow; r < spanStartRow + spanRowCount; ++r) {
-                        mergedRowsInColumn[col].insert(r);
+                        QTableWidgetItem* mergedItem = ui->Display->item(r, col);
+                        if (mergedItem) {
+                            mergedItem->setFont(mergedCellFont);
+                        }
                     }
                 }
                 spanStartRow = rowIndex;
@@ -141,7 +147,7 @@ void MainWindow::show_slots()
 
     for(int j=0;j<final[currentPage].size();j++){
         if (final[currentPage][j] != nullptr) {
-            InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType());
+            InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType(),final[currentPage][j]->GetSection());
         }
     }
 
@@ -278,11 +284,11 @@ void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
         QTime end = QTime::fromString(QString::fromStdString(endTime), "h:mm AP");
         text.replace("_", " ");
         if (typeStr == "LEC") {
-            lecSlot = new Slots(parseDays(daysStr), Slots::Lecture, start, end, text);
+            lecSlot = new Slots(parseDays(daysStr), Slots::Lecture, start, end, text,QString::fromStdString(currentId));
         } else if (typeStr == "LAB") {
-            labSlot = new Slots(parseDays(daysStr), Slots::Lab, start, end, text);
+            labSlot = new Slots(parseDays(daysStr), Slots::Lab, start, end, text,QString::fromStdString(currentId));
         } else if (typeStr == "SEM") {
-            semSlot = new Slots(parseDays(daysStr), Slots::Seminar, start, end, text);
+            semSlot = new Slots(parseDays(daysStr), Slots::Seminar, start, end, text,QString::fromStdString(currentId));
         }
     }
 
