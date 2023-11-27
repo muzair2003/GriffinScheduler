@@ -1,8 +1,8 @@
 #include "slots.h"
 
 
-Slots::Slots(std::vector<Days> day, Type hell, QTime Start, QTime End, QString sub,QString section):
-    m_Day(day),m_hell(hell),m_Start(Start), m_End(End),m_sub(sub),m_section(section)
+Slots::Slots(std::vector<Days> day, Type hell, QTime Start, QTime End, QString sub,QString section,QColor color):
+    m_Day(day),m_hell(hell),m_Start(Start), m_End(End),m_sub(sub),m_section(section),m_color(color)
 {
 
 }
@@ -22,6 +22,9 @@ Slots::Type Slots::GetType(){
 }
 QString Slots::GetSection(){
     return m_section;
+}
+QColor Slots::GetColor(){
+    return m_color;
 }
 
 

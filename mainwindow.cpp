@@ -53,7 +53,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std::vector<Slots::Days> days, Slots::Type what,QString section) {
+void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std::vector<Slots::Days> days, Slots::Type what,QString section,QColor subjectColor) {
     // Mapping from days to column indices
     std::map<Slots::Days, int> dayColumnMapping = {
         {Slots::Monday, 0}, {Slots::Tuesday, 1}, {Slots::Wednesday, 2},
@@ -123,10 +123,12 @@ void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std:
                         if (mergedItem) {
                             mergedItem->setFont(mergedCellFont);
                         }
+
                     }
                 }
                 spanStartRow = rowIndex;
                 spanRowCount = 1;
+                item->setBackground(subjectColor);
             }
 
             previousSlotText = slotText;
@@ -147,7 +149,7 @@ void MainWindow::show_slots()
 
     for(int j=0;j<final[currentPage].size();j++){
         if (final[currentPage][j] != nullptr) {
-            InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType(),final[currentPage][j]->GetSection());
+            InsertSlot(final[currentPage][j]->GetSubject(),final[currentPage][j]->GetTime(),final[currentPage][j]->GetDay(),final[currentPage][j]->GetType(),final[currentPage][j]->GetSection(),final[currentPage][j]->GetColor());
         }
     }
 
@@ -169,11 +171,17 @@ void MainWindow::show_slots()
 }
 void MainWindow::on_AlgorithmButton_clicked()
 {
-
+    currentPage = 0;
+    Algorithm* newAlg = new Algorithm();
     final = newAlg->Solve(subjects);
-    maxPage = final.size()-1;
-
-    show_slots();
+    ui->Display->clearContents();
+    if(final.size()>0){
+        maxPage = final.size()-1;
+        show_slots();
+    }
+    else{
+        QMessageBox::critical(this, tr("Schedule Generate"), tr("There are no possible schedules without conflicts."), QMessageBox::Ok);
+    }
 
 
 }
@@ -284,11 +292,11 @@ void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
         QTime end = QTime::fromString(QString::fromStdString(endTime), "h:mm AP");
         text.replace("_", " ");
         if (typeStr == "LEC") {
-            lecSlot = new Slots(parseDays(daysStr), Slots::Lecture, start, end, text,QString::fromStdString(currentId));
+            lecSlot = new Slots(parseDays(daysStr), Slots::Lecture, start, end, text,QString::fromStdString(currentId),color);
         } else if (typeStr == "LAB") {
-            labSlot = new Slots(parseDays(daysStr), Slots::Lab, start, end, text,QString::fromStdString(currentId));
+            labSlot = new Slots(parseDays(daysStr), Slots::Lab, start, end, text,QString::fromStdString(currentId),color);
         } else if (typeStr == "SEM") {
-            semSlot = new Slots(parseDays(daysStr), Slots::Seminar, start, end, text,QString::fromStdString(currentId));
+            semSlot = new Slots(parseDays(daysStr), Slots::Seminar, start, end, text,QString::fromStdString(currentId),color);
         }
     }
 

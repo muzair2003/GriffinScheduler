@@ -40,7 +40,7 @@ public:
 
 private slots:
 
-    void InsertSlot(QString subject,std::pair<QTime,QTime> times,std::vector<Slots::Days> days,Slots::Type what,QString section);
+    void InsertSlot(QString subject,std::pair<QTime,QTime> times,std::vector<Slots::Days> days,Slots::Type what,QString section,QColor subjectColor);
 
     //void on_SubjectAdd_clicked();
 
@@ -58,7 +58,7 @@ private slots:
     void show_slots();
 
 private:
-      Algorithm* newAlg = new Algorithm();
+
      std::vector<std::vector<Slots*>> final;
       Slots::Type parseType(const std::string& type) ;
      std::vector<Slots::Days> parseDays(const std::string& days);
