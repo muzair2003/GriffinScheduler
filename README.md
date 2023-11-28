@@ -34,15 +34,6 @@ Run the Application
 Open the extracted folder.
 Look for the executable file (Schedule.exe).
 Double-click on the .exe file to launch the application.
-## Usage
-
-```javascript
-import Component from 'my-project'
-
-function App() {
-  return <Component />
-}
-```
 
 
 ## Support
