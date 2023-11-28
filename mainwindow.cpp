@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     QFont cellFont;
     cellFont.setPointSize(1);
     ui->Display->verticalHeader()->setFont(cellFont);
@@ -65,7 +66,6 @@ MainWindow::MainWindow(QWidget *parent)
     for (int row = 0; row < ui->Display->rowCount(); row += mergeSize) {
         ui->Display->item(row, 0)->setTextAlignment(Qt::AlignTop | Qt::AlignRight);
     }
-
 }
 
 
