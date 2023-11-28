@@ -12,41 +12,63 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    QFont fnt;
-    // Set the vertical header labels as hours and 10-minute intervals from 8 AM to 8 PM
-    QStringList timeLabels;
-    for (int hour = 8; hour <= 19; hour++) { // Loop from 8 AM to 8 PM
-        // Convert 24-hour time to 12-hour time and append AM or PM
-        int displayHour = (hour > 12) ? (hour - 12) : hour;
-        QString amPm = (hour < 12) ? "AM" : "PM";
-        timeLabels << QString::number(displayHour); // Hour on one row
-        timeLabels << amPm;
-
-        // Add 10-minute intervals within the hour
-        for (int minute = 10; minute < 50; minute += 10) {
-            timeLabels << "";
-        }
-    }
-    fnt.setPointSize(5);
-
-    ui->Display->setFont(fnt);
-    ui->Display->setRowCount(timeLabels.size()); // Adjust the number of rows accordingly
-    ui->Display->setColumnCount(7);
-    QStringList dayLabels;
-    dayLabels << "Monday" << "Tuesday" << "Wednesday" << "Thursday" << "Friday" << "Saturday" << "Sunday";
-    ui->Display->setHorizontalHeaderLabels(dayLabels);
-    ui->Display->setVerticalHeaderLabels(timeLabels);
-    currentPage = 0;
-    ui->prevPageButton->setEnabled(false);
-    ui->nextPageButton->setEnabled(false);
-    ui->Display->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    QFont cellFont;
+    cellFont.setPointSize(1);
+    ui->Display->verticalHeader()->setFont(cellFont);
     QHeaderView *verticalHeader = ui->Display->verticalHeader();
     verticalHeader->setSectionResizeMode(QHeaderView::Stretch);
     verticalHeader->setDefaultSectionSize(1);
-    QFont font;
-    font.setPointSize(15);
-    ui->Display->horizontalHeader()->setFont(font);
+
+
+    QStringList timeLabels;
+    for (int hour = 8; hour <= 19; hour++) {
+        int displayHour = (hour > 12) ? (hour - 12) : hour;
+        QString amPm = (hour < 12) ? "AM" : "PM";
+        timeLabels << QString::number(displayHour) + amPm; // Newline character added
+
+        for (int minute = 10; minute < 60; minute += 10) {
+            timeLabels << "";
+        }
+    }
+
+    ui->Display->setRowCount(timeLabels.size());
+    ui->Display->setColumnCount(8); // 7 days + 1 for time column
+    QStringList dayLabels = {"Time", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    ui->Display->setHorizontalHeaderLabels(dayLabels);
+    int mergeSize = 6; // Number of rows to merge
+    for (int row = 0; row < 72; row += mergeSize) {
+        // Merge cells from 'row' to 'row + mergeSize - 1' in the first column
+        ui->Display->setSpan(row, 0, mergeSize, 1);
+    }
+    // Populate the first column with time labels
+    for (int i = 0; i < timeLabels.size(); ++i) {
+        QTableWidgetItem *newItem = new QTableWidgetItem(timeLabels[i]);
+        ui->Display->setItem(i, 0, newItem);
+    }
+
+    currentPage = 0;
+    ui->prevPageButton->setEnabled(false);
+    ui->nextPageButton->setEnabled(false);
+
+    // Set the interactive mode for all columns
+    ui->Display->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+    // Set the width of the time column (column 0) to 5
+    ui->Display->setColumnWidth(0, 50);
+
+    // Set the stretch mode for the rest of the columns
+    for (int i = 1; i < ui->Display->columnCount(); ++i) {
+        ui->Display->horizontalHeader()->setSectionResizeMode(i, QHeaderView::Stretch);
+    }
+    // Hide the vertical header
+    ui->Display->verticalHeader()->setVisible(false);
+    for (int row = 0; row < ui->Display->rowCount(); row += mergeSize) {
+        ui->Display->item(row, 0)->setTextAlignment(Qt::AlignTop | Qt::AlignRight);
+    }
+
 }
+
+
 
 MainWindow::~MainWindow()
 {
@@ -56,8 +78,8 @@ MainWindow::~MainWindow()
 void MainWindow::InsertSlot(QString subject, std::pair<QTime, QTime> times, std::vector<Slots::Days> days, Slots::Type what,QString section,QColor subjectColor) {
     // Mapping from days to column indices
     std::map<Slots::Days, int> dayColumnMapping = {
-        {Slots::Monday, 0}, {Slots::Tuesday, 1}, {Slots::Wednesday, 2},
-        {Slots::Thursday, 3}, {Slots::Friday, 4}, {Slots::Saturday, 5}, {Slots::Sunday, 6}
+        {Slots::Monday, 1}, {Slots::Tuesday, 2}, {Slots::Wednesday, 3},
+        {Slots::Thursday, 4}, {Slots::Friday, 5}, {Slots::Saturday, 6}, {Slots::Sunday, 7}
     };
 
     // Mapping from slot types to string representations
@@ -145,7 +167,42 @@ void MainWindow::show_slots()
 
     ui->PageNumber->setText("Page " + QString::number(currentPage+1));
     ui->Display->clearContents();
+    QStringList timeLabels;
+    for (int hour = 8; hour <= 19; hour++) {
+        int displayHour = (hour > 12) ? (hour - 12) : hour;
+        QString amPm = (hour < 12) ? "AM" : "PM";
+        timeLabels << QString::number(displayHour) + amPm; // Newline character added
 
+        for (int minute = 10; minute < 60; minute += 10) {
+            timeLabels << "";
+        }
+    }
+
+    int mergeSize = 6; // Number of rows to merge
+    for (int row = 0; row < 72; row += mergeSize) {
+        // Merge cells from 'row' to 'row + mergeSize - 1' in the first column
+        ui->Display->setSpan(row, 0, mergeSize, 1);
+    }
+    // Populate the first column with time labels
+    for (int i = 0; i < timeLabels.size(); ++i) {
+        QTableWidgetItem *newItem = new QTableWidgetItem(timeLabels[i]);
+        ui->Display->setItem(i, 0, newItem);
+    }
+    // Set the interactive mode for all columns
+    ui->Display->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+
+    // Set the width of the time column (column 0) to 5
+    ui->Display->setColumnWidth(0, 50);
+
+    // Set the stretch mode for the rest of the columns
+    for (int i = 1; i < ui->Display->columnCount(); ++i) {
+        ui->Display->horizontalHeader()->setSectionResizeMode(i, QHeaderView::Stretch);
+    }
+    // Hide the vertical header
+    ui->Display->verticalHeader()->setVisible(false);
+    for (int row = 0; row < ui->Display->rowCount(); row += mergeSize) {
+        ui->Display->item(row, 0)->setTextAlignment(Qt::AlignTop | Qt::AlignRight);
+    }
 
     for(int j=0;j<final[currentPage].size();j++){
         if (final[currentPage][j] != nullptr) {
