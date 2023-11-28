@@ -10,6 +10,16 @@ Try GriffinScheduler to generate a schedule that suits your needs.
 
 Getting Started with GriffinScheduler
 
+Make sure you have chrome and python installed on your system
+
+```bash
+pip install selenium
+```
+
+```bash
+pip install webdriver-manager
+```
+
 Download the Deployment Folder
 
 Navigate to the GitHub Repository.
@@ -22,7 +32,7 @@ Right-click on the folder and select "Extract All..." to extract the contents.
 Run the Application
 
 Open the extracted folder.
-Look for the executable file ([YourApplicationName].exe).
+Look for the executable file (Schedule.exe).
 Double-click on the .exe file to launch the application.
 ## Usage
 
