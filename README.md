@@ -36,7 +36,7 @@ Look for the executable file (Schedule.exe).
 Double-click on the .exe file to launch the application.
 
 ## Screenshots
-![image](https://github.com/muzair2003/GriffinScheduler/assets/60098918/46690147-0236-46fe-9c4c-26065b147335)
+![image](https://github.com/muzair2003/GriffinScheduler/assets/60098918/86a261d0-3ad3-4043-8c29-dddce5f938c0)
 
 ## Support
 
