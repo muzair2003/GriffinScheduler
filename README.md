@@ -3,7 +3,7 @@
 
 Hey University of Guelph students have you ever struggled to find a balance when choosing courses. You may want to avoid early classes or maybe you want a break in the middle of the day.
 
-Try GriffinScheduler to generate a schedule that suits your needs.
+GriffinScheduler uses a python based webscraper to pull class information and uses a backtracking algorithm to find every schedule that can be created without conflicts.
 
 
 ## Installation
