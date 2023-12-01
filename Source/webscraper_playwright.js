@@ -3,18 +3,22 @@ const fs = require('fs');
 const path = require('path');
 
 (async () => {
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({});
   const page = await browser.newPage();
-  const courseCode = 'ENGG 3100'; // Replace with dynamic course code
+  const courseCode = process.argv[2]; // Gets the third command line argument
+  if (!courseCode) {
+    console.log("Please provide a course code.");
+    return;
+  }
+  const [coursePrefix, courseNumber] = courseCode.split(' ');
 
-  await page.goto(`https://colleague-ss.uoguelph.ca/Student/Courses/Search?keyword=${courseCode.replace(" ", "+")}`);
-  await page.waitForLoadState('domcontentloaded');
+  await page.goto(`https://colleague-ss.uoguelph.ca/Student/Courses/Search?keyword=${courseCode.replace(" ", "+")}`,{ waitUntil: 'networkidle' });
 
   // Find elements with 'id' attribute and check if it contains the specific strings
   const elements = await page.$$('[id]');
   for (const element of elements) {
     const id = await element.getAttribute('id');
-    if (id && id.includes('collapsible-view-available-sections-for-ENGG') && id.includes('3100-groupHeading')) {
+    if (id && id.includes(`collapsible-view-available-sections-for-${coursePrefix}`) && id.includes(`${courseNumber}-groupHeading`)) {
       await element.click();
       break;
     }
@@ -37,10 +41,10 @@ const path = require('path');
   const data = [];
 
   for (const sectionId of uniqueIds) {
-    const sectionText = await page.textContent(`#section-${sectionId}`);
-    const sectionCodeMatch = sectionText.match(/(?<=\*)(\d+)/);
-    const sectionCode = sectionCodeMatch ? sectionCodeMatch[0] : '';
-
+    let sectionText = await page.textContent(`#section-${sectionId}`);
+    sectionText = sectionText.replace(new RegExp(`\\b${courseNumber}\\b`, 'g'), ''); // Remove course code number
+    sectionText = sectionText.replace(new RegExp(`\\b${coursePrefix}\\b`, 'g'), ''); // Remove course code prefix
+    sectionText = sectionText.replace(/\*/g, ''); // Remove all asterisks
     for (let i = 0; i < 4; i++) {
       try {
         const startTimeSelector = `#section-${sectionId}-meeting-times-start-${i}`;
@@ -51,18 +55,19 @@ const path = require('path');
         if (await page.isVisible(startTimeSelector)) {
           const startTimeText = await page.textContent(startTimeSelector);
           const endTimeText = await page.textContent(endTimeSelector);
-          const daysText = await page.textContent(daysSelector);
+          let daysText = await page.textContent(daysSelector);
           const methodText = await page.textContent(methodSelector);
 
           if (methodText.trim() === "EXAM") {
             continue;
           }
+          daysText = daysText.replace(/T(?!h)/g, 'Tu')      
 
-          const key = `${sectionId}-${startTimeText}-${endTimeText}-${daysText}-${methodText}`;
+          const key = `${sectionText}-${startTimeText}-${endTimeText}-${daysText}-${methodText}`;
 
           if (!uniqueRows.has(key)) {
             uniqueRows.add(key);
-            data.push([sectionId, sectionCode, startTimeText, endTimeText, daysText, methodText]);
+            data.push([sectionText, startTimeText, endTimeText, daysText, methodText]); // Include sectionText in the data
           }
         }
       } catch (error) {
