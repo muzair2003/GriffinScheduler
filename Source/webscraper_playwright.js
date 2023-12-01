@@ -78,7 +78,12 @@ const path = require('path');
   }
 
   // Write data to CSV
-  const csvContent = data.map(row => row.join(',')).join('\n');
+  
+  // Define your headers
+  const headers = ['Section', 'Start Time', 'End Time', 'Days', 'Method'];
+
+  // Prepend the headers to your data
+  const csvContent = [headers.join(',')].concat(data.map(row => row.join(','))).join('\n');
   fs.writeFileSync(path.join(__dirname, `${courseCode.replace(" ", "_")}.csv`), csvContent);
 
   await browser.close();
