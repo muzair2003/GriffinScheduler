@@ -287,8 +287,8 @@ void MainWindow::on_PullButton_clicked()
         text.replace("_", " ");
         // Start the process with the command and arguments
         QString appPath = QCoreApplication::applicationDirPath();
-        QString scriptPath = appPath + "/webscraper.py";  // Assuming the script is in the same directory as the executable
-        process->start("python", QStringList() << scriptPath << text);
+        QString scriptPath = appPath + "/webscraper_playwright.js";  // Assuming the script is in the same directory as the executable
+        process->start("node", QStringList() << scriptPath << text);
         ui->PullButton->setDisabled(true);
         ui->PullButton->setText("Pulling");
 
@@ -304,71 +304,71 @@ void MainWindow::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus
     if (exitCode == 0 && exitStatus == QProcess::NormalExit) {
 
 
-    QString text = ui->PullSubject->text();
-    QColor color = QColor::fromRgb(QRandomGenerator::global()->generate());
-    Subject* newSubject = new Subject(text,color);
+        QString text = ui->PullSubject->text();
+        QColor color = QColor::fromRgb(QRandomGenerator::global()->generate());
+        Subject* newSubject = new Subject(text,color);
 
-    text.replace(" ", "_");
-    std::string filename = text.toStdString() + ".csv";  // Convert to std::string and append .csv
-    std::ifstream file(filename);
-    std::string line;
-    std::string currentId;
+        text.replace(" ", "_");
+        std::string filename = text.toStdString() + ".csv";  // Convert to std::string and append .csv
+        std::ifstream file(filename);
+        std::string line;
+        std::string currentId;
 
-    // Skip the header
-    std::getline(file, line);
+        // Skip the header
+        std::getline(file, line);
 
-    // Initialize empty slots
-    Slots* lecSlot = nullptr;
-    Slots* labSlot = nullptr;
-    Slots* semSlot = nullptr;
+        // Initialize empty slots
+        Slots* lecSlot = nullptr;
+        Slots* labSlot = nullptr;
+        Slots* semSlot = nullptr;
 
-    while (std::getline(file, line)) {
-        std::stringstream ss(line);
-        std::string id, startTime, endTime, daysStr, typeStr;
+        while (std::getline(file, line)) {
+            std::stringstream ss(line);
+            std::string id, startTime, endTime, daysStr, typeStr;
 
-        std::getline(ss, id, ',');
-        if (currentId.empty()) {
-            currentId = id;
-        } else if (currentId != id) {
-            // If the ID changed, add the slots to the subject and reset them
+            std::getline(ss, id, ',');
+            if (currentId.empty()) {
+                currentId = id;
+            } else if (currentId != id) {
+                // If the ID changed, add the slots to the subject and reset them
+                std::vector<Slots*> Section = { lecSlot, labSlot, semSlot };
+                newSubject->add_Slot(Section);
+                // Reset the slots for the next subject
+                lecSlot = nullptr;
+                labSlot = nullptr;
+                semSlot = nullptr;
+                currentId = id;
+            }
+
+            std::getline(ss, startTime, ',');
+            std::getline(ss, endTime, ',');
+            std::getline(ss, daysStr, ',');
+            std::getline(ss, typeStr);
+
+            QTime start = QTime::fromString(QString::fromStdString(startTime), "h:mm AP");
+            QTime end = QTime::fromString(QString::fromStdString(endTime), "h:mm AP");
+            text.replace("_", " ");
+            if (typeStr == "LEC") {
+                lecSlot = new Slots(parseDays(daysStr), Slots::Lecture, start, end, text,QString::fromStdString(currentId),color);
+            } else if (typeStr == "LAB") {
+                labSlot = new Slots(parseDays(daysStr), Slots::Lab, start, end, text,QString::fromStdString(currentId),color);
+            } else if (typeStr == "SEM") {
+                semSlot = new Slots(parseDays(daysStr), Slots::Seminar, start, end, text,QString::fromStdString(currentId),color);
+            }
+        }
+
+        // Add the last set of slots for the last subject
+        if (!currentId.empty()) {
             std::vector<Slots*> Section = { lecSlot, labSlot, semSlot };
             newSubject->add_Slot(Section);
-            // Reset the slots for the next subject
-            lecSlot = nullptr;
-            labSlot = nullptr;
-            semSlot = nullptr;
-            currentId = id;
         }
 
-        std::getline(ss, startTime, ',');
-        std::getline(ss, endTime, ',');
-        std::getline(ss, daysStr, ',');
-        std::getline(ss, typeStr);
+        // Push back the new subject to the list of subjects
+        subjects.push_back(newSubject);
 
-        QTime start = QTime::fromString(QString::fromStdString(startTime), "h:mm AP");
-        QTime end = QTime::fromString(QString::fromStdString(endTime), "h:mm AP");
-        text.replace("_", " ");
-        if (typeStr == "LEC") {
-            lecSlot = new Slots(parseDays(daysStr), Slots::Lecture, start, end, text,QString::fromStdString(currentId),color);
-        } else if (typeStr == "LAB") {
-            labSlot = new Slots(parseDays(daysStr), Slots::Lab, start, end, text,QString::fromStdString(currentId),color);
-        } else if (typeStr == "SEM") {
-            semSlot = new Slots(parseDays(daysStr), Slots::Seminar, start, end, text,QString::fromStdString(currentId),color);
-        }
-    }
+        file.close();
 
-    // Add the last set of slots for the last subject
-    if (!currentId.empty()) {
-        std::vector<Slots*> Section = { lecSlot, labSlot, semSlot };
-        newSubject->add_Slot(Section);
-    }
-
-    // Push back the new subject to the list of subjects
-    subjects.push_back(newSubject);
-
-    file.close();
-
-    QMessageBox::information(this, tr("Subject Pull"), tr("Subject was pulled successfully."), QMessageBox::Ok);
+        QMessageBox::information(this, tr("Subject Pull"), tr("Subject was pulled successfully."), QMessageBox::Ok);
     } else {
         QMessageBox::critical(this, tr("Subject Pull"), tr("Error: Subject was not pulled."), QMessageBox::Ok);
     }

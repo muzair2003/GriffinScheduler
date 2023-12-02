@@ -61,7 +61,7 @@ const path = require('path');
           if (methodText.trim() === "EXAM") {
             continue;
           }
-          daysText = daysText.replace(/T(?!h)/g, 'Tu')      
+          daysText = daysText.replace(/T(?!h)/g, 'Tu').trim();      
 
           const key = `${sectionText}-${startTimeText}-${endTimeText}-${daysText}-${methodText}`;
 
@@ -78,9 +78,9 @@ const path = require('path');
   }
 
   // Write data to CSV
-  
+
   // Define your headers
-  const headers = ['Section', 'Start Time', 'End Time', 'Days', 'Method'];
+  const headers = ['Section', 'StartTime', 'EndTime', 'Days', 'Type'];
 
   // Prepend the headers to your data
   const csvContent = [headers.join(',')].concat(data.map(row => row.join(','))).join('\n');
