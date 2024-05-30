@@ -20,13 +20,14 @@ pip install selenium
 ```bash
 pip install webdriver-manager
 ```
+```bash
+npm init playwright@latest
+```
 
-Download the Deployment Folder
-
-Navigate to the GitHub Repository.
-Find the Deployment folder.
-Click to download the folder onto your local machine.
-Extract the Folder
+  Navigate to the GitHub Repository.
+  Find the Deployment folder.
+  Click to download the folder onto your local machine.
+  Extract the Folder
 
 Once downloaded, locate the folder in your downloads directory.
 Right-click on the folder and select "Extract All..." to extract the contents.
