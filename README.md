@@ -11,7 +11,7 @@ GriffinScheduler uses a python based webscraper to pull class information and us
 
 Getting Started with GriffinScheduler
 
-Make sure you have chrome and python installed on your system
+Make sure you have chrome, python and node.js installed on your system
 
 ```bash
 pip install selenium
