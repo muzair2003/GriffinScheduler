@@ -14,7 +14,6 @@ Getting Started with GriffinScheduler
 Make sure you have chrome and node.js installed on your system
 
 ```
-```bash
 npm init playwright@latest
 ```
 
